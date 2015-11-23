@@ -1,0 +1,55 @@
+var onRun = function (context) {
+
+    // Global variables
+    doc = context.document;
+    plugin = context.plugin;
+    page = doc.currentPage();
+    artboard = page.currentArtboard();
+    selection = context.selection;
+    var selection = context.selection;
+
+    for(var i = 0; i < [selection count]; i++){
+
+        log("entro")
+
+        var layer = selection[i];
+
+        //log(layer.frame());
+        var layerSizes = layer.frame();
+        log([layerSizes width]);
+
+        if([layer class] == MSShapeGroup){
+
+            var fill = layer.style().fills().firstObject();
+            var url = ""
+            var person = missingPerson();
+            var imageData = NSImage.alloc().initWithData(get(person.photo));
+            layerStyle = layer.style().fills().firstObject();
+            layerStyle.setFillType(4);
+            var imageCollection = fill.documentData().images();
+            [fill setPatternImage: imageData collection: imageCollection];
+            layerStyle.setPatternFillType(1);
+        }
+    }
+
+    function missingPerson() {
+      var url = "http://find-us.herokuapp.com/search?age_start=5&age_end=18";
+      var response = get(url);
+      var json = [NSJSONSerialization JSONObjectWithData:response options:nil error:nil];
+      var inx = parseInt(Math.random() * [json count]);
+      var person = json[inx];
+      return person;
+    }
+
+
+
+
+    function get(url) {
+        var request = NSURLRequest.requestWithURL(NSURL.URLWithString(url));
+        var response = NSURLConnection.sendSynchronousRequest_returningResponse_error(request, null, null);
+        return response;
+    }
+
+};
+
+onRun(context);
